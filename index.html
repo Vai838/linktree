@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaishnav | Cyber Hive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #FFD700; /* Honey Yellow */
+            --primary-dim: #b39700;
+            --bg-dark: #050505;
+            --hex-bg: #111;
+            --text-glow: 0 0 10px rgba(255, 215, 0, 0.7);
+            --hex-size: 150px;
+            --gap: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% 50%, #1a1a00 0%, transparent 60%),
+                linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* Glitch Title Effect */
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-shadow: var(--text-glow);
+            margin-bottom: 2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        h1::before {
+            content: attr(data-text);
+            position: absolute;
+            left: -2px;
+            text-shadow: 1px 0 red; 
+            top: 0;
+            color: white;
+            background: var(--bg-dark);
+            overflow: hidden;
+            clip: rect(0, 900px, 0, 0); 
+            animation: noise-anim 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes noise-anim {
+            0% { clip: rect(40px, 9999px, 44px, 0); }
+            5% { clip: rect(10px, 9999px, 80px, 0); }
+            10% { clip: rect(90px, 9999px, 100px, 0); }
+            100% { clip: rect(0, 9999px, 0, 0); }
+        }
+
+        /* The Hive Grid */
+        .hive-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            max-width: 900px;
+            padding: 20px;
+        }
+
+        /* Hexagon Shape Logic */
+        .hex-wrapper {
+            position: relative;
+            width: var(--hex-size);
+            height: calc(var(--hex-size) * 0.866); /* Height of reg hex */
+            margin: calc(var(--gap) * 2) var(--gap);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.2));
+            cursor: pointer;
+        }
+
+        /* Staggered Layout for Desktop */
+        @media (min-width: 768px) {
+            .hive-container {
+                display: grid;
+                grid-template-columns: repeat(3, auto); 
+                gap: 15px;
+            }
+            .hex-wrapper:nth-child(even) {
+                transform: translateY(50%); /* Shift every other item down */
+            }
+            /* Hover reset for the transform */
+            .hex-wrapper:nth-child(even):hover {
+                transform: translateY(50%) scale(1.1);
+            }
+        }
+
+        .hex-border {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--primary);
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            z-index: 1;
+        }
+
+        .hex-content {
+            position: absolute;
+            top: 2px; left: 2px;
+            width: calc(100% - 4px);
+            height: calc(100% - 4px);
+            background: var(--hex-bg);
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+            transition: background 0.3s ease;
+        }
+
+        /* Content Styling */
+        .hex-content i {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .hex-content span {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .hex-content .status {
+            font-size: 0.6rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* Hover Effects */
+        .hex-wrapper:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            filter: drop-shadow(0 0 15px var(--primary));
+        }
+
+        .hex-wrapper:hover .hex-content {
+            background: var(--primary);
+        }
+
+        .hex-wrapper:hover .hex-content i {
+            color: var(--bg-dark);
+            transform: scale(1.2);
+        }
+
+        .hex-wrapper:hover .hex-content span {
+            color: var(--bg-dark);
+        }
+        
+        .hex-wrapper:hover .hex-content .status {
+            color: #333;
+        }
+
+        /* Coming Soon Styling */
+        .coming-soon {
+            filter: grayscale(1);
+            opacity: 0.7;
+        }
+        .coming-soon:hover {
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+            transform: scale(1); /* No zoom */
+        }
+        .coming-soon:hover .hex-content {
+            background: #222; /* Don't turn yellow */
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 3rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* Particle Background Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <h1 data-text="LINK // HIVE">LINK // HIVE</h1>
+
+    <div class="hive-container">
+
+        <div class="hex-wrapper">
+            <div class="hex-border"></div>
+            <a href="https://vai838.github.io/" target="_blank" class="hex-content">
+                <i class="fa-solid fa-user-astronaut"></i>
+                <span>Personal</span>
+            </a>
+        </div>
+
+        <div class="hex-wrapper">
+            <div class="hex-border"></div>
+            <a href="https://bit.ly/elfenix_space" target="_blank" class="hex-content">
+                <i class="fa-solid fa-briefcase"></i>
+                <span>Philanthropy</span>
+            </a>
+        </div>
+
+        <div class="hex-wrapper">
+            <div class="hex-border"></div>
+            <a href="https://instagram.com/el_.fenix" target="_blank" class="hex-content">
+                <i class="fa-brands fa-instagram"></i>
+                <span>EdTech</span>
+            </a>
+        </div>
+
+        <div class="hex-wrapper">
+            <div class="hex-border"></div>
+            <a href="https://instagram.com/solipsist_v838" target="_blank" class="hex-content">
+                <i class="fa-solid fa-camera-retro"></i>
+                <span>Captures</span>
+            </a>
+        </div>
+
+        <div class="hex-wrapper">
+            <div class="hex-border"></div>
+            <a href="https://instagram.com/scied_praxis" target="_blank" class="hex-content">
+                <i class="fa-solid fa-users-viewfinder"></i>
+                <span>SciEd Praxis</span>
+            </a>
+        </div>
+
+        <div class="hex-wrapper coming-soon">
+            <div class="hex-border"></div>
+            <div class="hex-content">
+                <i class="fa-brands fa-youtube"></i>
+                <span>YouTube</span>
+                <span class="status">Initializing...</span>
+            </div>
+        </div>
+
+        <div class="hex-wrapper coming-soon">
+            <div class="hex-border"></div>
+            <div class="hex-content">
+                <i class="fa-brands fa-flickr"></i>
+                <span>Flickr</span>
+                <span class="status">Offline</span>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        &copy; 2025 VAI838
+    </footer>
+
+    <script>
+        // Futuristic Particle Background Script
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particles = [];
+        const particleCount = 40;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+                this.color = '#FFD700'; // Yellow particles
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.01; // Fade out logic
+                if (this.size <= 0.2) {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 1;
+                }
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Connect particles with lines to look like a network
+        function connect() {
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a; b < particles.length; b++) {
+                    let distance = ((particles[a].x - particles[b].x) ** 2) + ((particles[a].y - particles[b].y) ** 2);
+                    if (distance < (canvas.width/7) * (canvas.height/7)) {
+                        ctx.strokeStyle = 'rgba(255, 215, 0, 0.1)';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            connect();
+            requestAnimationFrame(animate);
+        }
+
+        // Resize Fix
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
